@@ -1,8 +1,9 @@
-#include "gfx/gfx_objects.h"
 #include <vector>
+#include <iostream>
 #include <dxgi1_6.h>
 #include <d3d12.h>
-#include <iostream>
+#include "gfx/gfx_objects.h"
+#include "framework/common.h"
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d12.lib")
@@ -11,7 +12,21 @@ bool LittleGFXInstance::Initialize(bool enableDebugLayer)
 {
     debugLayerEnabled = enableDebugLayer;
     UINT flags = 0;
-    if (debugLayerEnabled) flags = DXGI_CREATE_FACTORY_DEBUG;
+    if (debugLayerEnabled)
+    {
+#if defined(_DEBUG)
+        flags = DXGI_CREATE_FACTORY_DEBUG;
+        //启用调试层。在使用DXGI或D3D API之前，调试层应当首先被启用。在创建ID3D12Deviece后启用调试层会让device被移除。
+        {
+            Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
+            if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+            {
+                debugController->EnableDebugLayer();
+            }
+        }
+#endif 
+    }
+
     if (SUCCEEDED(CreateDXGIFactory2(flags, IID_PPV_ARGS(&pDXGIFactory))))
     {
         queryAllAdapters();
@@ -67,6 +82,57 @@ void LittleGFXInstance::queryAllAdapters()
         }
     }
 }
+
+/*
+//使用案例
+D3D_FEATURE_LEVEL featureLevels[] =
+{
+    D3D_FEATURE_LEVEL_12_2,
+    D3D_FEATURE_LEVEL_12_1,
+    D3D_FEATURE_LEVEL_12_0,
+    D3D_FEATURE_LEVEL_11_1,
+    D3D_FEATURE_LEVEL_11_0,
+};
+
+LittleGFXAdapter* GFXAdapter=nullptr;
+for (std::uint32_t i = 0U; i < _countof(featureLevels); ++i)
+{
+    GFXAdapter=instance->GetSupportedAdapter(featureLevels[i]);
+}
+*/
+/*
+LittleGFXAdapter* LittleGFXInstance::GetSupportedAdapter(const D3D_FEATURE_LEVEL featureLevel)
+{
+    if (pDXGIFactory == nullptr)
+    {
+        throw std::runtime_error(std::string("DXGIFactory Is Nullptr."));
+    }
+        
+    Microsoft::WRL::ComPtr<IDXGIAdapter4> dxgiAdapter4;
+    for (std::uint32_t adapterIndex = 0U; ; ++adapterIndex) 
+    {
+        Microsoft::WRL::ComPtr<IDXGIAdapter1> dxgiAdapter1;
+        if (DXGI_ERROR_NOT_FOUND == pDXGIFactory->EnumWarpAdapter(IID_PPV_ARGS(&dxgiAdapter1))) 
+        {
+            break;
+        }
+    
+        const HRESULT hres = D3D12CreateDevice(dxgiAdapter1.Get(),featureLevel,_uuidof(ID3D12Device),nullptr);
+        if (SUCCEEDED(hres)) 
+        {
+            //ComPtr转换
+            ThrowIfFailed(dxgiAdapter1.As(&dxgiAdapter4));
+            break;
+        }
+        //dxgiAdapter1->Release();
+    }
+    
+    LittleGFXAdapter SupportedAdapter;
+    SupportedAdapter.pDXGIAdapter = dxgiAdapter4.Get();
+    SupportedAdapter.instance = this;
+    return &SupportedAdapter;
+}
+*/
 
 bool LittleGFXDevice::Initialize(LittleGFXAdapter* in_adapter)
 {

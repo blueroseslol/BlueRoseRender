@@ -1,3 +1,4 @@
+﻿#include <d3d12.h>
 #include "gfx/gfx_objects.h"
 
 class LittleRendererWindow final : public LittleGFXWindow

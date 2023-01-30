@@ -1,6 +1,8 @@
-#pragma once
-#include "os/window.h"
+﻿#pragma once
 #include <vector>
+#include <dxgi1_4.h>
+#include "wrl/client.h"
+#include "os/window.h"
 
 class LittleGFXAdapter
 {
@@ -13,6 +15,9 @@ protected:
     struct IDXGIAdapter4* pDXGIAdapter;
 };
 
+/*
+ * 创建IDXGIFactory6与获取IDXGIAdapter4列表。
+ */
 class LittleGFXInstance
 {
     friend class LittleGFXWindow;
@@ -25,9 +30,10 @@ public:
 
     uint32_t GetAdapterCount() const { return adapters.size(); }
     LittleGFXAdapter* GetAdapter(uint32_t idx) { return &adapters[idx]; }
-
+    //LittleGFXAdapter* GetSupportedAdapter(const D3D_FEATURE_LEVEL featureLevel);
 protected:
     void queryAllAdapters();
+    
     bool debugLayerEnabled;
     struct IDXGIFactory6* pDXGIFactory = nullptr;
     std::vector<LittleGFXAdapter> adapters;
