@@ -8,37 +8,37 @@ public:
         MSG msg = { 0 };
         while (msg.message != WM_QUIT)
         {
-            // ´¦ÀíÏµÍ³µÄÏûÏ¢
+            // å¤„ç†ç³»ç»Ÿçš„æ¶ˆæ¯
             if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
             {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
-            // ÔÚ¿ÕÏĞÊ±½øĞĞÎÒÃÇ×Ô¼ºµÄÂß¼­
+            // åœ¨ç©ºé—²æ—¶è¿›è¡Œæˆ‘ä»¬è‡ªå·±çš„é€»è¾‘
             else
             {
-                // ÔİÊ±Ê²Ã´¶¼²»×ö
-                // Sleep 1~2ms À´±ÜÃâÕû¸öÏß³Ì±»whileÇÀÕ¼
+                // æš‚æ—¶ä»€ä¹ˆéƒ½ä¸åš
+                // Sleep 1~2ms æ¥é¿å…æ•´ä¸ªçº¿ç¨‹è¢«whileæŠ¢å 
                 Sleep(1);
             }
         }
-        // Èç¹ûÊÕµ½ÁËWM_QUITÏûÏ¢£¬ÎÒÃÇÖ±½ÓÍË³ö´Ëº¯Êı
+        // å¦‚æœæ”¶åˆ°äº†WM_QUITæ¶ˆæ¯ï¼Œæˆ‘ä»¬ç›´æ¥é€€å‡ºæ­¤å‡½æ•°
         return;
     }
 };
 
 int main(void)
 {
-    // ´´½¨²¢³õÊ¼»¯ÊµÀı
+    // åˆ›å»ºå¹¶åˆå§‹åŒ–å®ä¾‹
     auto instance = LittleFactory::Create<LittleGFXInstance>(true);
     auto device = LittleFactory::Create<LittleGFXDevice>(instance->GetAdapter(0));
-    // ´´½¨²¢³õÊ¼»¯´°¿ÚÀà
+    // åˆ›å»ºå¹¶åˆå§‹åŒ–çª—å£ç±»
     auto window = LittleFactory::Create<LittleRendererWindow>(L"BlueRoseRender", device, true);
-    // ÔËĞĞ´°¿ÚÀàµÄÑ­»·
+    // è¿è¡Œçª—å£ç±»çš„å¾ªç¯
     window->Run();
-    // ÏÖÔÚ´°¿ÚÒÑ¾­¹Ø±Õ£¬ÎÒÃÇÇåÀí´°¿ÚÀà
+    // ç°åœ¨çª—å£å·²ç»å…³é—­ï¼Œæˆ‘ä»¬æ¸…ç†çª—å£ç±»
     LittleFactory::Destroy(window);
-    // ÇåÀíÊµÀı
+    // æ¸…ç†å®ä¾‹
     LittleFactory::Destroy(device);
     LittleFactory::Destroy(instance);
 
