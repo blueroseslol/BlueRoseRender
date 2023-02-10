@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <assert.h>
 #include <dxgi1_6.h>
 #include <d3d12.h>
 #include "gfx/gfx_objects.h"
@@ -100,17 +101,17 @@ for (std::uint32_t i = 0U; i < _countof(featureLevels); ++i)
     GFXAdapter=instance->GetSupportedAdapter(featureLevels[i]);
 }
 */
-/*
-LittleGFXAdapter* LittleGFXInstance::GetSupportedAdapter(const D3D_FEATURE_LEVEL featureLevel)
+
+LittleGFXAdapter* LittleGFXInstance::GetSupportedAdapter(const D3D_FEATURE_LEVEL featureLevel,const uint32_t idx)
 {
     if (pDXGIFactory == nullptr)
     {
         throw std::runtime_error(std::string("DXGIFactory Is Nullptr."));
     }
-        
-    Microsoft::WRL::ComPtr<IDXGIAdapter4> dxgiAdapter4;
+    
     for (std::uint32_t adapterIndex = 0U; ; ++adapterIndex) 
     {
+        Microsoft::WRL::ComPtr<IDXGIAdapter4> dxgiAdapter4;
         Microsoft::WRL::ComPtr<IDXGIAdapter1> dxgiAdapter1;
         if (DXGI_ERROR_NOT_FOUND == pDXGIFactory->EnumWarpAdapter(IID_PPV_ARGS(&dxgiAdapter1))) 
         {
@@ -122,17 +123,19 @@ LittleGFXAdapter* LittleGFXInstance::GetSupportedAdapter(const D3D_FEATURE_LEVEL
         {
             //ComPtr转换
             ThrowIfFailed(dxgiAdapter1.As(&dxgiAdapter4));
+
+            LittleGFXAdapter newAdapter;
+            newAdapter.pDXGIAdapter = dxgiAdapter4.Get();
+            newAdapter.instance = this;
+            adapters.emplace_back(newAdapter);
             break;
         }
         //dxgiAdapter1->Release();
     }
     
-    LittleGFXAdapter SupportedAdapter;
-    SupportedAdapter.pDXGIAdapter = dxgiAdapter4.Get();
-    SupportedAdapter.instance = this;
-    return &SupportedAdapter;
+    assert(adapters.size() <= 0);
+    return (idx+1) <= adapters.size() ? &adapters[idx] : &adapters[0];
 }
-*/
 
 bool LittleGFXDevice::Initialize(LittleGFXAdapter* in_adapter)
 {

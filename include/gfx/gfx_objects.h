@@ -30,7 +30,7 @@ public:
 
     uint32_t GetAdapterCount() const { return adapters.size(); }
     LittleGFXAdapter* GetAdapter(uint32_t idx) { return &adapters[idx]; }
-    //LittleGFXAdapter* GetSupportedAdapter(const D3D_FEATURE_LEVEL featureLevel);
+    LittleGFXAdapter* GetSupportedAdapter(const D3D_FEATURE_LEVEL featureLevel,const uint32_t idx = 0);
 protected:
     void queryAllAdapters();
     
