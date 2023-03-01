@@ -19,6 +19,10 @@ target_include_directories(BlueRoseRender PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/in
 # 将目标链接到windows的一些API上
 set(PLATFORM_FRAMEWORKS psapi user32 advapi32 iphlpapi userenv ws2_32)
 target_link_libraries(BlueRoseRender PRIVATE ${PLATFORM_FRAMEWORKS})
+# 给x86平台添加SSE2指令集
+if(CMAKE_SIZEOF_VOID_P EQUAL 4) # 32-bit
+    SET(CMAKE_CXX_FLAGS "/arch:SSE2")
+endif()
 # 添加目录结构
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${src})
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${headers})
