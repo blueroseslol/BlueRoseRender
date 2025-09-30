@@ -17,6 +17,7 @@ bool LittleGFXInstance::Initialize(bool enableDebugLayer)
     {
 #if defined(_DEBUG)
         //启用调试层。在使用DXGI或D3D API之前，调试层应当首先被启用。在创建ID3D12Deviece后启用调试层会让device被移除。
+        //需要安装Graphic Tool才能正常运行调试层具体，设置-应用-可选功能-查看功能-图形工具。参考： https://www.thewindowsclub.com/install-graphics-tools-in-windows-10
         {
             Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
             if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
