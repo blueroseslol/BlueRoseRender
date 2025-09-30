@@ -16,13 +16,13 @@ bool LittleGFXInstance::Initialize(bool enableDebugLayer)
     if (debugLayerEnabled)
     {
 #if defined(_DEBUG)
-        flags = DXGI_CREATE_FACTORY_DEBUG;
         //启用调试层。在使用DXGI或D3D API之前，调试层应当首先被启用。在创建ID3D12Deviece后启用调试层会让device被移除。
         {
             Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
             if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
             {
                 debugController->EnableDebugLayer();
+                flags = DXGI_CREATE_FACTORY_DEBUG;
             }
         }
 #endif 
